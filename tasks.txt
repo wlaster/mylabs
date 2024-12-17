@@ -67,6 +67,7 @@ LIMIT 1;
 // 10. Получить минимальный по расстоянию маршрут от одной заданной остановки до другой заданной остановки. 
 MATCH (start:Stop {id: 1}), (end:Stop {id: 10}) 
 WITH start, end
+
 MATCH p = shortestPath((start)-[:HAS_STOP*]-(end))
 WITH p, length(p) AS pathLength
 
@@ -78,7 +79,7 @@ LIMIT 1;
 
 // 11. Найти названия организаций, расположенных рядом с третьей по счету остановкой от заданной остановки. 
 MATCH (r:Route)-[rel:HAS_STOP]->(s:Stop)
-WHERE s.id = 1  // Задайте нужный id начальной остановки
+WHERE s.id = 1
 WITH r, s, rel.order AS stopOrder
 MATCH (r)-[rel2:HAS_STOP]->(thirdStop:Stop)
 WHERE rel2.order = stopOrder + 3
