@@ -53,7 +53,7 @@ CREATE (:Organization {id: 1, name: 'Магазин 1', type: 'магазин'})
 // Маршрут 1: Линейный маршрут с остановками
 MATCH (r:Route {id: 1})
 MATCH (s:Stop)
-WHERE s.id IN [1, 2, 3, 4, 5, 6, 7]
+WHERE s.id IN [1, 2, 3, 4, 5, 6, 7, 10, 13, 11]
 CREATE (r)-[:HAS_STOP]->(s);
 
 // Маршрут 2: Маршрут, пересекающийся с первым и имеющий уникальные остановки
@@ -77,7 +77,7 @@ CREATE (r)-[:HAS_STOP]->(s);
 // Маршрут 5: Пересекающийся маршрут с точками пересадки
 MATCH (r:Route {id: 5})
 MATCH (s:Stop)
-WHERE s.id IN [1, 9, 12, 18, 19, 20]
+WHERE s.id IN [9, 12, 18, 19, 20]
 CREATE (r)-[:HAS_STOP]->(s);
 
 
