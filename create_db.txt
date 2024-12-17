@@ -54,31 +54,46 @@ CREATE (:Organization {id: 1, name: 'Магазин 1', type: 'магазин'})
 MATCH (r:Route {id: 1})
 MATCH (s:Stop)
 WHERE s.id IN [1, 2, 3, 4, 5, 6, 7, 10, 13, 11, 15]
-CREATE (r)-[:HAS_STOP]->(s);
+WITH r, COLLECT(s) AS stops
+UNWIND RANGE(0, SIZE(stops)-1) AS idx
+WITH r, stops[idx] AS stop, idx
+CREATE (r)-[rel:HAS_STOP {order: idx + 1}]->(stop);
 
 // Маршрут 2: Маршрут, пересекающийся с первым и имеющий уникальные остановки
 MATCH (r:Route {id: 2})
 MATCH (s:Stop)
 WHERE s.id IN [4, 5, 8, 9, 10, 11]
-CREATE (r)-[:HAS_STOP]->(s);
+WITH r, COLLECT(s) AS stops
+UNWIND RANGE(0, SIZE(stops)-1) AS idx
+WITH r, stops[idx] AS stop, idx
+CREATE (r)-[rel:HAS_STOP {order: idx + 1}]->(stop);
 
 // Маршрут 3: Замкнутый цикл с остановками, пересекающийся с другими маршрутами
 MATCH (r:Route {id: 3})
 MATCH (s:Stop)
 WHERE s.id IN [6, 7, 11, 12, 13, 6]
-CREATE (r)-[:HAS_STOP]->(s);
+WITH r, COLLECT(s) AS stops
+UNWIND RANGE(0, SIZE(stops)-1) AS idx
+WITH r, stops[idx] AS stop, idx
+CREATE (r)-[rel:HAS_STOP {order: idx + 1}]->(stop);
 
 // Маршрут 4: Уникальный маршрут, но с одной общей остановкой с Маршрутом 3
 MATCH (r:Route {id: 4})
 MATCH (s:Stop)
 WHERE s.id IN [14, 15, 16, 17]
-CREATE (r)-[:HAS_STOP]->(s);
+WITH r, COLLECT(s) AS stops
+UNWIND RANGE(0, SIZE(stops)-1) AS idx
+WITH r, stops[idx] AS stop, idx
+CREATE (r)-[rel:HAS_STOP {order: idx + 1}]->(stop);
 
 // Маршрут 5: Пересекающийся маршрут с точками пересадки
 MATCH (r:Route {id: 5})
 MATCH (s:Stop)
 WHERE s.id IN [9, 12, 18, 19, 20]
-CREATE (r)-[:HAS_STOP]->(s);
+WITH r, COLLECT(s) AS stops
+UNWIND RANGE(0, SIZE(stops)-1) AS idx
+WITH r, stops[idx] AS stop, idx
+CREATE (r)-[rel:HAS_STOP {order: idx + 1}]->(stop);
 
 
 // Связь остановки и организации
