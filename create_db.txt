@@ -39,15 +39,15 @@ CREATE (:Organization {id: 1, name: 'Магазин 1', type: 'магазин'})
        (:Organization {id: 9, name: 'Магазин 3', type: 'магазин'}),
        (:Organization {id: 10, name: 'Аптека 3', type: 'аптека'}),
        (:Organization {id: 11, name: 'Кафе 3', type: 'кафе'}),
-       (:Organization {id: 12, name: 'Банк 3', type: 'банк'}),
+       (:Organization {id: 12, name: 'Школа 1', type: 'школа'}),
        (:Organization {id: 13, name: 'Магазин 4', type: 'магазин'}),
        (:Organization {id: 14, name: 'Аптека 4', type: 'аптека'}),
        (:Organization {id: 15, name: 'Кафе 4', type: 'кафе'}),
-       (:Organization {id: 16, name: 'Банк 4', type: 'банк'}),
+       (:Organization {id: 16, name: 'Школа 2', type: 'школа'}),
        (:Organization {id: 17, name: 'Магазин 5', type: 'магазин'}),
        (:Organization {id: 18, name: 'Аптека 5', type: 'аптека'}),
        (:Organization {id: 19, name: 'Кафе 5', type: 'кафе'}),
-       (:Organization {id: 20, name: 'Банк 5', type: 'банк'});
+       (:Organization {id: 20, name: 'Школа 3', type: 'школа'});
 
 
 // Маршрут 1: Линейный маршрут с остановками
