@@ -1,9 +1,11 @@
+// Маршруты
 CREATE (:Route {id: 1, name: 'Маршрут 1'}),
        (:Route {id: 2, name: 'Маршрут 2'}),
        (:Route {id: 3, name: 'Маршрут 3'}),
        (:Route {id: 4, name: 'Маршрут 4'}),
        (:Route {id: 5, name: 'Маршрут 5'});
 
+// Остановки
 CREATE (:Stop {id: 1, name: 'Остановка 1'}),
        (:Stop {id: 2, name: 'Остановка 2'}),
        (:Stop {id: 3, name: 'Остановка 3'}),
@@ -25,131 +27,117 @@ CREATE (:Stop {id: 1, name: 'Остановка 1'}),
        (:Stop {id: 19, name: 'Остановка 19'}),
        (:Stop {id: 20, name: 'Остановка 20'});
 
-CREATE (:Organization {id: 1, name: 'Магазин 1'}),
-       (:Organization {id: 2, name: 'Аптека 1'}),
-       (:Organization {id: 3, name: 'Кафе 1'}),
-       (:Organization {id: 4, name: 'Банк 1'}),
-       (:Organization {id: 5, name: 'Магазин 2'}),
-       (:Organization {id: 6, name: 'Аптека 2'}),
-       (:Organization {id: 7, name: 'Кафе 2'}),
-       (:Organization {id: 8, name: 'Банк 2'}),
-       (:Organization {id: 9, name: 'Магазин 3'}),
-       (:Organization {id: 10, name: 'Аптека 3'}),
-       (:Organization {id: 11, name: 'Кафе 3'}),
-       (:Organization {id: 12, name: 'Банк 3'}),
-       (:Organization {id: 13, name: 'Магазин 4'}),
-       (:Organization {id: 14, name: 'Аптека 4'}),
-       (:Organization {id: 15, name: 'Кафе 4'}),
-       (:Organization {id: 16, name: 'Банк 4'}),
-       (:Organization {id: 17, name: 'Магазин 5'}),
-       (:Organization {id: 18, name: 'Аптека 5'}),
-       (:Organization {id: 19, name: 'Кафе 5'}),
-       (:Organization {id: 20, name: 'Банк 5'});
+// Организации
+CREATE (:Organization {id: 1, name: 'Магазин 1', type: 'магазин'}),
+       (:Organization {id: 2, name: 'Аптека 1', type: 'аптека'}),
+       (:Organization {id: 3, name: 'Кафе 1', type: 'кафе'}),
+       (:Organization {id: 4, name: 'Банк 1', type: 'банк'}),
+       (:Organization {id: 5, name: 'Магазин 2', type: 'магазин'}),
+       (:Organization {id: 6, name: 'Аптека 2', type: 'аптека'}),
+       (:Organization {id: 7, name: 'Кафе 2', type: 'кафе'}),
+       (:Organization {id: 8, name: 'Банк 2', type: 'банк'}),
+       (:Organization {id: 9, name: 'Магазин 3', type: 'магазин'}),
+       (:Organization {id: 10, name: 'Аптека 3', type: 'аптека'}),
+       (:Organization {id: 11, name: 'Кафе 3', type: 'кафе'}),
+       (:Organization {id: 12, name: 'Банк 3', type: 'банк'}),
+       (:Organization {id: 13, name: 'Магазин 4', type: 'магазин'}),
+       (:Organization {id: 14, name: 'Аптека 4', type: 'аптека'}),
+       (:Organization {id: 15, name: 'Кафе 4', type: 'кафе'}),
+       (:Organization {id: 16, name: 'Банк 4', type: 'банк'}),
+       (:Organization {id: 17, name: 'Магазин 5', type: 'магазин'}),
+       (:Organization {id: 18, name: 'Аптека 5', type: 'аптека'}),
+       (:Organization {id: 19, name: 'Кафе 5', type: 'кафе'}),
+       (:Organization {id: 20, name: 'Банк 5', type: 'банк'});
 
 
-
-MATCH (r:Route {id: 1}), (s:Stop)
-WHERE s.id IN [1, 2, 3, 4, 5]
+// Маршрут 1: Линейный маршрут с остановками
+MATCH (r:Route {id: 1})
+MATCH (s:Stop)
+WHERE s.id IN [1, 2, 3, 4, 5, 6, 7]
 CREATE (r)-[:HAS_STOP]->(s);
 
-MATCH (r:Route {id: 2}), (s:Stop)
-WHERE s.id IN [6, 7, 8, 9, 10]
+// Маршрут 2: Маршрут, пересекающийся с первым и имеющий уникальные остановки
+MATCH (r:Route {id: 2})
+MATCH (s:Stop)
+WHERE s.id IN [4, 5, 8, 9, 10, 11]
 CREATE (r)-[:HAS_STOP]->(s);
 
-MATCH (r:Route {id: 3}), (s:Stop)
-WHERE s.id IN [11, 12, 13, 14, 15]
+// Маршрут 3: Замкнутый цикл с остановками, пересекающийся с другими маршрутами
+MATCH (r:Route {id: 3})
+MATCH (s:Stop)
+WHERE s.id IN [6, 7, 11, 12, 13, 6]
 CREATE (r)-[:HAS_STOP]->(s);
 
-MATCH (r:Route {id: 4}), (s:Stop)
-WHERE s.id IN [16, 17, 18, 19, 20]
+// Маршрут 4: Уникальный маршрут, но с одной общей остановкой с Маршрутом 3
+MATCH (r:Route {id: 4})
+MATCH (s:Stop)
+WHERE s.id IN [14, 15, 16, 17, 11]
 CREATE (r)-[:HAS_STOP]->(s);
 
-MATCH (r:Route {id: 5}), (s:Stop)
-WHERE s.id IN [1, 6, 11, 16]
+// Маршрут 5: Пересекающийся маршрут с точками пересадки
+MATCH (r:Route {id: 5})
+MATCH (s:Stop)
+WHERE s.id IN [1, 9, 12, 18, 19, 20]
 CREATE (r)-[:HAS_STOP]->(s);
 
 
+// Связь остановки и организации
+MATCH (s:Stop {id: 1}), (o:Organization {id: 1})
+CREATE (s)-[:NEAR]->(o);
 
-MATCH (o:Organization {id: 1})
-MATCH (s:Stop {id: 1})
-MERGE (o)-[:LOCATED_NEAR]->(s);
+MATCH (s:Stop {id: 2}), (o:Organization {id: 2})
+CREATE (s)-[:NEAR]->(o);
 
-MATCH (o:Organization {id: 2})
-MATCH (s:Stop {id: 2})
-MERGE (o)-[:LOCATED_NEAR]->(s);
+MATCH (s:Stop {id: 3}), (o:Organization {id: 3})
+CREATE (s)-[:NEAR]->(o);
 
-MATCH (o:Organization {id: 3})
-MATCH (s:Stop {id: 3})
-MERGE (o)-[:LOCATED_NEAR]->(s);
+MATCH (s:Stop {id: 4}), (o:Organization {id: 4})
+CREATE (s)-[:NEAR]->(o);
 
-MATCH (o:Organization {id: 4})
-MATCH (s:Stop {id: 4})
-MERGE (o)-[:LOCATED_NEAR]->(s);
+MATCH (s:Stop {id: 5}), (o:Organization {id: 5})
+CREATE (s)-[:NEAR]->(o);
 
-MATCH (o:Organization {id: 4})
-MATCH (s:Stop {id: 4})
-MERGE (o)-[:LOCATED_NEAR]->(s);
+MATCH (s:Stop {id: 6}), (o:Organization {id: 6})
+CREATE (s)-[:NEAR]->(o);
 
-MATCH (o:Organization {id: 5})
-MATCH (s:Stop {id: 5})
-MERGE (o)-[:LOCATED_NEAR]->(s);
+MATCH (s:Stop {id: 7}), (o:Organization {id: 7})
+CREATE (s)-[:NEAR]->(o);
 
-MATCH (o:Organization {id: 6})
-MATCH (s:Stop {id: 6})
-MERGE (o)-[:LOCATED_NEAR]->(s);
+MATCH (s:Stop {id: 8}), (o:Organization {id: 8})
+CREATE (s)-[:NEAR]->(o);
 
-MATCH (o:Organization {id: 7})
-MATCH (s:Stop {id: 7})
-MERGE (o)-[:LOCATED_NEAR]->(s);
+MATCH (s:Stop {id: 9}), (o:Organization {id: 9})
+CREATE (s)-[:NEAR]->(o);
 
-MATCH (o:Organization {id: 8})
-MATCH (s:Stop {id: 8})
-MERGE (o)-[:LOCATED_NEAR]->(s);
+MATCH (s:Stop {id: 10}), (o:Organization {id: 10})
+CREATE (s)-[:NEAR]->(o);
 
-MATCH (o:Organization {id: 9})
-MATCH (s:Stop {id: 9})
-MERGE (o)-[:LOCATED_NEAR]->(s);
+MATCH (s:Stop {id: 11}), (o:Organization {id: 11})
+CREATE (s)-[:NEAR]->(o);
 
-MATCH (o:Organization {id: 10})
-MATCH (s:Stop {id: 10})
-MERGE (o)-[:LOCATED_NEAR]->(s);
+MATCH (s:Stop {id: 12}), (o:Organization {id: 12})
+CREATE (s)-[:NEAR]->(o);
 
-MATCH (o:Organization {id: 11})
-MATCH (s:Stop {id: 11})
-MERGE (o)-[:LOCATED_NEAR]->(s);
+MATCH (s:Stop {id: 13}), (o:Organization {id: 13})
+CREATE (s)-[:NEAR]->(o);
 
-MATCH (o:Organization {id: 12})
-MATCH (s:Stop {id: 12})
-MERGE (o)-[:LOCATED_NEAR]->(s);
+MATCH (s:Stop {id: 14}), (o:Organization {id: 14})
+CREATE (s)-[:NEAR]->(o);
 
-MATCH (o:Organization {id: 13})
-MATCH (s:Stop {id: 13})
-MERGE (o)-[:LOCATED_NEAR]->(s);
+MATCH (s:Stop {id: 15}), (o:Organization {id: 15})
+CREATE (s)-[:NEAR]->(o);
 
-MATCH (o:Organization {id: 14})
-MATCH (s:Stop {id: 14})
-MERGE (o)-[:LOCATED_NEAR]->(s);
+MATCH (s:Stop {id: 16}), (o:Organization {id: 16})
+CREATE (s)-[:NEAR]->(o);
 
-MATCH (o:Organization {id: 15})
-MATCH (s:Stop {id: 15})
-MERGE (o)-[:LOCATED_NEAR]->(s);
+MATCH (s:Stop {id: 17}), (o:Organization {id: 17})
+CREATE (s)-[:NEAR]->(o);
 
-MATCH (o:Organization {id: 16})
-MATCH (s:Stop {id: 16})
-MERGE (o)-[:LOCATED_NEAR]->(s);
+MATCH (s:Stop {id: 18}), (o:Organization {id: 18})
+CREATE (s)-[:NEAR]->(o);
 
-MATCH (o:Organization {id: 17})
-MATCH (s:Stop {id: 17})
-MERGE (o)-[:LOCATED_NEAR]->(s);
+MATCH (s:Stop {id: 19}), (o:Organization {id: 19})
+CREATE (s)-[:NEAR]->(o);
 
-MATCH (o:Organization {id: 18})
-MATCH (s:Stop {id: 18})
-MERGE (o)-[:LOCATED_NEAR]->(s);
-
-MATCH (o:Organization {id: 19})
-MATCH (s:Stop {id: 19})
-MERGE (o)-[:LOCATED_NEAR]->(s);
-
-MATCH (o:Organization {id: 20})
-MATCH (s:Stop {id: 20})
-MERGE (o)-[:LOCATED_NEAR]->(s);
+MATCH (s:Stop {id: 20}), (o:Organization {id: 20})
+CREATE (s)-[:NEAR]->(o);
