@@ -80,7 +80,7 @@ CREATE (r)-[rel:HAS_STOP {order: idx + 1}]->(stop);
 // Маршрут 4: Уникальный маршрут, но с одной общей остановкой с Маршрутом 3
 MATCH (r:Route {id: 4})
 MATCH (s:Stop)
-WHERE s.id IN [14, 15, 16, 17]
+WHERE s.id IN [14, 15, 16, 17, 2, 3]
 WITH r, COLLECT(s) AS stops
 UNWIND RANGE(0, SIZE(stops)-1) AS idx
 WITH r, stops[idx] AS stop, idx
