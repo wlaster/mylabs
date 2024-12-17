@@ -20,7 +20,7 @@ RETURN s.name AS StopName;
 
 // 5. Найти названия учебных организаций и названия остановок, около которых они расположены:
 MATCH (s:Stop)-[:NEAR]->(o:Organization)
-WHERE o.type = 'учебное заведение'
+WHERE o.type = 'школа'
 RETURN o.name AS OrganizationName, s.name AS StopName;
 
 // 6. Получить все маршруты от одной заданной остановки до другой заданной остановки:
