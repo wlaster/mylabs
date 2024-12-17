@@ -1,0 +1,87 @@
+// 1. Получить последовательность остановок (названия остановки и номер по порядку) для заданного маршрута:
+MATCH (r:Route {id: $routeId})-[:HAS_STOP]->(s:Stop)
+RETURN s.name AS StopName, s.id AS StopOrder
+ORDER BY s.id;
+
+// 2. Получить названия организаций, расположенных рядом с заданной остановкой:
+MATCH (s:Stop {id: $stopId})-[:NEAR]->(o:Organization)
+RETURN o.name AS OrganizationName;
+
+// 3. Найти все названия остановок, на которых возможны пересадки на другой маршрут:
+MATCH (s:Stop)<-[:HAS_STOP]-(r1:Route), (s)<-[:HAS_STOP]-(r2:Route)
+WHERE r1.id <> r2.id
+RETURN DISTINCT s.name AS StopName;
+
+// 4. Найти все названия остановок, на которых останавливается только один маршрут:
+MATCH (s:Stop)<-[:HAS_STOP]-(r:Route)
+WITH s, COUNT(r) AS RouteCount
+WHERE RouteCount = 1
+RETURN s.name AS StopName;
+
+// 5. Найти названия учебных организаций и названия остановок, около которых они расположены:
+MATCH (s:Stop)-[:NEAR]->(o:Organization)
+WHERE o.type = 'учебное заведение'
+RETURN o.name AS OrganizationName, s.name AS StopName;
+
+// 6. Получить все маршруты от одной заданной остановки до другой заданной остановки:
+// a) Остановки лежат на одном маршруте:
+MATCH (r:Route)-[:HAS_STOP]->(s1:Stop {id: $startStopId}),
+      (r)-[:HAS_STOP]->(s2:Stop {id: $endStopId})
+RETURN r.name AS RouteName;
+
+// b) Остановки лежат на разных маршрутах:
+MATCH (s1:Stop {id: $startStopId})<-[:HAS_STOP]-(r1:Route),
+      (s2:Stop {id: $endStopId})<-[:HAS_STOP]-(r2:Route)
+WHERE r1.id <> r2.id
+RETURN DISTINCT r1.name AS StartRoute, r2.name AS EndRoute;
+
+// 7. Получить минимальный по количеству остановок маршрут от одной заданной остановки до другой заданной остановки: 
+// a) Остановки лежат на одном маршруте; 
+MATCH (r:Route)-[:HAS_STOP]->(s1:Stop {id: $startStopId}),
+      (r)-[:HAS_STOP]->(s2:Stop {id: $endStopId})
+RETURN r.name AS RouteName, ABS(s1.id - s2.id) AS StopsCount
+ORDER BY StopsCount ASC
+LIMIT 1;
+
+// b) Остановки лежат на разных маршрутах. 
+MATCH (s1:Stop {id: $startStopId})<-[:HAS_STOP]-(r1:Route),
+      (s2:Stop {id: $endStopId})<-[:HAS_STOP]-(r2:Route)
+WHERE r1.id <> r2.id
+RETURN r1.name AS StartRoute, r2.name AS EndRoute, COUNT(DISTINCT s1) + COUNT(DISTINCT s2) AS TotalStops
+ORDER BY TotalStops ASC
+LIMIT 1;
+
+// 8. Получить все маршруты, которые проходят через 3 заданные остановки. 
+MATCH (r:Route)-[:HAS_STOP]->(s1:Stop {id: $stopId1}),
+      (r)-[:HAS_STOP]->(s2:Stop {id: $stopId2}),
+      (r)-[:HAS_STOP]->(s3:Stop {id: $stopId3})
+RETURN r.name AS RouteName;
+
+// 9. Получить маршрут, который проходит рядом с максимальным количеством магазинов. 
+MATCH (r:Route)-[:HAS_STOP]->(s:Stop)-[:NEAR]->(o:Organization)
+WHERE o.type = 'магазин'
+RETURN r.name AS RouteName, COUNT(o) AS StoreCount
+ORDER BY StoreCount DESC
+LIMIT 1;
+
+// 10. Получить минимальный по расстоянию маршрут от одной заданной остановки до другой заданной остановки. 
+MATCH (s1:Stop {id: $startStopId})<-[:HAS_STOP*]->(s2:Stop {id: $endStopId})
+WITH s1, s2, MIN(length((s1)-[:HAS_STOP*]->(s2))) AS ShortestPath
+RETURN ShortestPath;
+
+// 11. Найти названия организаций, расположенных рядом с третьей по счету остановкой от заданной остановки. 
+MATCH (r:Route)-[:HAS_STOP]->(s:Stop)-[:HAS_STOP*3]->(t:Stop)-[:NEAR]->(o:Organization)
+WHERE s.id = $startStopId
+RETURN t.name AS StopName, o.name AS OrganizationName;
+
+// 12. Найти все маршруты, длина которых превышает 10 км.
+MATCH (r:Route)-[:HAS_STOP]->(s:Stop)
+WITH r, COUNT(s) AS StopCount
+WHERE StopCount > 10
+RETURN r.name AS RouteName, StopCount
+ORDER BY StopCount DESC;
+
+
+
+
+
