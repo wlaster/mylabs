@@ -110,54 +110,17 @@ ORDER BY stopOrder
 RETURN stop.name AS stopName, route.name AS routeName;
 
 
-MATCH (start:Stop {id: 14}), (end:Stop {id: 18})
-MATCH p = (start)-[:HAS_STOP*]->(end)
-WITH p, nodes(p) AS stops
-UNWIND stops AS stop
-WITH stop, stop.order AS stopOrder
-ORDER BY stopOrder
-WITH COLLECT(stop) AS orderedStops
+
+
+// 10. Получить минимальный по расстоянию маршрут от одной заданной остановки до другой заданной остановки. 
+MATCH (start:Stop {id: 14}), (end:Stop {id: 18}) 
+WITH start, end
+
+MATCH p = shortestPath((start)-[:HAS_STOP*]-(end))
+WITH nodes(p) AS stops
+UNWIND stops AS STOP
+WITH STOP,
+COLLECT(STOP) AS orderedStops
 UNWIND orderedStops AS orderedStop
-MATCH (route:Route)-[:HAS_STOP]->(orderedStop)
-WITH orderedStop, route, orderedStop.order AS stopOrder
-ORDER BY stopOrder
-RETURN orderedStop.name AS stopName, route.name AS routeName;
-
-
-MATCH (start:Stop {id: 14}), (end:Stop {id: 18})
-MATCH (start)-[:HAS_STOP]->(stop1:Stop)<-[:HAS_STOP]-(route:Route)-[:HAS_STOP]->(stop2:Stop)
-WHERE stop1.id <> start.id AND stop2.id <> end.id
-WITH route, start, stop1, stop2
-MATCH (route)-[:HAS_STOP]->(stop)
-WITH stop ORDER BY stop.order
-RETURN stop.name AS stopName, route.name AS routeName;
-
-
-MATCH (start:Stop {id: 14}), (end:Stop {id: 18})
-MATCH p = (start)-[:HAS_STOP*]->(end)
-WITH p, nodes(p) AS stops
-UNWIND stops AS stop
-MATCH (route:Route)-[:HAS_STOP]->(stop)
-WITH stop, route, stop.order AS stopOrder
-ORDER BY stopOrder
-WITH COLLECT(stop) AS orderedStops
-UNWIND orderedStops AS orderedStop
-MATCH (route:Route)-[:HAS_STOP]->(orderedStop)
-WITH orderedStop, route, orderedStop.order AS stopOrder
-ORDER BY stopOrder
-RETURN orderedStop.name AS stopName, route.name AS routeName;
-
-
-MATCH (start:Stop {id: 14}), (end:Stop {id: 18})
-MATCH p = (start)-[:HAS_STOP*]->(end)
-WITH p, nodes(p) AS stops
-UNWIND stops AS stop
-MATCH (route:Route)-[:HAS_STOP]->(stop)
-WITH stop, route, stop.order AS stopOrder
-ORDER BY stopOrder
-WITH COLLECT(stop) AS orderedStops
-UNWIND orderedStops AS orderedStop
-MATCH (route:Route)-[:HAS_STOP]->(orderedStop)
-WITH orderedStop, route, orderedStop.order AS stopOrder
-ORDER BY stopOrder
-RETURN orderedStop.name AS stopName, route.name AS routeName;
+ORDER BY orderedStop.order
+RETURN orderedStop;
