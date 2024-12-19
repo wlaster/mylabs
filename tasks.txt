@@ -1,7 +1,8 @@
 // 1. Получить последовательность остановок (названия остановки и номер по порядку) для заданного маршрута:
-MATCH (r:Route {id: $routeId})-[:HAS_STOP]->(s:Stop)
-RETURN s.name AS StopName, s.id AS StopOrder
-ORDER BY s.id;
+MATCH (r:Route {id: 1})-[rel:HAS_STOP]->(s:Stop)
+WITH s, rel.order AS stopOrder
+ORDER BY rel.order
+RETURN s.name AS StopName, stopOrder AS StopOrder;
 
 // 2. Получить названия организаций, расположенных рядом с заданной остановкой:
 MATCH (s:Stop {id: $stopId})-[:NEAR]->(o:Organization)
