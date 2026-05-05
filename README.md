@@ -1,0 +1,1 @@
+vless://25ef1255-adb8-40c6-a5ae-fbefa6b6f6d5@51.250.34.190:443?security=reality&sni=eh.vk.com&fp=chrome&pbk=yInhMQEHae5z82rfus_8tVkCapJpMBhvk6vrBA7dUU0&sid=b8b0814f&type=grpc&packetEncoding=xudp&encryption=none#%D0%A4%D0%B8%D0%BD%D0%BB%D1%8F%D0%BD%D0%B4%D0%B8%D1%8F%F0%9F%87%AB%F0%9F%87%AE%F0%9F%9F%A2LTE%F0%9F%8C%9F
